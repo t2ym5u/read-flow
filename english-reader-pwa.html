@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadFlow - Apprends l'anglais en lisant</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUmVhZEZsb3ciLCJzaG9ydF9uYW1lIjoiUmVhZEZsb3ciLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzFhMTYyZSIsInRoZW1lX2NvbG9yIjoiI2ZmNmI2YiIsImRlc2NyaXB0aW9uIjoiQXBwcmVuZHMgbCdhbmdsYWlzIGVuIGxpc2FudCBkZXMgaGlzdG9pcmVzIiwiSWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwuLi4iLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a162e;
+            --bg-secondary: #252036;
+            --bg-card: #2d2842;
+            --accent-primary: #ff6b6b;
+            --accent-secondary: #ffd93d;
+            --accent-tertiary: #6bcf7f;
+            --text-primary: #f8f9fa;
+            --text-secondary: #b4b4c6;
+            --text-muted: #7d7a91;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Background decorative elements */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-decoration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-decoration::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(107, 207, 127, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        /* Container */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-icon {
+            font-size: 1.25rem;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease 0.1s backwards;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: var(--accent-primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Content sections */
+        .content-section {
+            display: none;
+            padding: 0 1.5rem 2rem;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        /* Story cards grid */
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 50%);
+        }
+
+        .story-content {
+            padding: 1.25rem;
+        }
+
+        .story-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-tertiary);
+            color: var(--bg-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .story-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .story-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .story-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .story-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Reader view */
+        .reader-view {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button:hover {
+            background: var(--bg-secondary);
+            transform: translateX(-5px);
+        }
+
+        .reader-controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .control-btn {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        .control-btn.active {
+            background: var(--accent-primary);
+        }
+
+        .reader-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .reader-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .reader-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .reader-text {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            line-height: 1.9;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .reader-text.simplified {
+            font-size: 1.4rem;
+            line-height: 2;
+        }
+
+        .sentence {
+            display: inline;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 0;
+            border-radius: 3px;
+        }
+
+        .sentence:hover {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .word {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+
+        .word:hover {
+            background: rgba(255, 217, 61, 0.2);
+            color: var(--accent-secondary);
+        }
+
+        /* Translation popup */
+        .translation-popup {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .translation-popup.visible {
+            bottom: 0;
+        }
+
+        .translation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .translation-close {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .translation-original {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-secondary);
+        }
+
+        .translation-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .translation-audio {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .audio-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--accent-primary);
+            border: none;
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Quiz section */
+        .quiz-container {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+        }
+
+        .quiz-question {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: rgba(107, 207, 127, 0.2);
+            border-color: var(--accent-tertiary);
+        }
+
+        .quiz-option.wrong {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: var(--accent-primary);
+        }
+
+        /* Progress section */
+        .progress-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-secondary);
+        }
+
+        .progress-stat:last-child {
+            border-bottom: none;
+        }
+
+        .progress-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .vocab-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .vocab-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vocab-word {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+        }
+
+        .vocab-translation {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reader-title {
+                font-size: 1.8rem;
+            }
+
+            .reader-text {
+                font-size: 1.1rem;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .nav-tabs::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--bg-secondary);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">ReadFlow</div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-icon">🔥</span>
+                    <span class="stat-value" id="streak">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-value" id="points">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="library">📖 Bibliothèque</button>
+            <button class="nav-tab" data-tab="reader" style="display: none;">📄 Lecture</button>
+            <button class="nav-tab" data-tab="progress">📊 Progrès</button>
+            <button class="nav-tab" data-tab="vocabulary">📝 Vocabulaire</button>
+        </div>
+
+        <!-- Library Section -->
+        <div class="content-section active" id="library">
+            <div class="stories-grid" id="stories-grid"></div>
+        </div>
+
+        <!-- Reader Section -->
+        <div class="content-section" id="reader">
+            <div class="reader-view">
+                <div class="reader-header">
+                    <button class="back-button" onclick="app.goBack()">
+                        <span>←</span>
+                        <span>Retour</span>
+                    </button>
+                    <div class="reader-controls">
+                        <button class="control-btn" id="simplifyBtn" onclick="app.toggleSimplify()" title="Mode simplifié">💡</button>
+                        <button class="control-btn" id="audioBtn" onclick="app.toggleAudio()" title="Audio">🔊</button>
+                        <button class="control-btn" onclick="app.increaseFontSize()" title="Augmenter taille">A+</button>
+                        <button class="control-btn" onclick="app.decreaseFontSize()" title="Réduire taille">A-</button>
+                    </div>
+                </div>
+                
+                <h1 class="reader-title" id="reader-title"></h1>
+                
+                <div class="reader-progress">
+                    <div class="reader-progress-bar" id="progress-bar" style="width: 0%"></div>
+                </div>
+                
+                <div class="reader-text" id="reader-content"></div>
+                
+                <div class="quiz-container" id="quiz-container" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="content-section" id="progress">
+            <div class="progress-card">
+                <h3>📈 Tes statistiques</h3>
+                <div class="progress-stat">
+                    <span>Jours consécutifs</span>
+                    <span class="progress-stat-value" id="progress-streak">0</span>
+                </div>
+                <div class="progress-stat">
+                    <span>Histoires lues</span>
+                    <span class="progress-stat-value" id="progress-stories">0</span>
+                </div>
+                <div class="progress-stat">
+                    <span>Mots appris</span>
+                    <span class="progress-stat-value" id="progress-words">0</span>
+                </div>
+                <div class="progress-stat">
+                    <span>Temps de lecture</span>
+                    <span class="progress-stat-value" id="progress-time">0min</span>
+                </div>
+            </div>
+
+            <div class="progress-card">
+                <h3>🎯 Objectifs quotidiens</h3>
+                <div class="progress-stat">
+                    <span>Lire 15 minutes</span>
+                    <span class="progress-stat-value">✓</span>
+                </div>
+                <div class="progress-stat">
+                    <span>Apprendre 5 mots</span>
+                    <span class="progress-stat-value">3/5</span>
+                </div>
+                <div class="progress-stat">
+                    <span>Finir 1 histoire</span>
+                    <span class="progress-stat-value">○</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Section -->
+        <div class="content-section" id="vocabulary">
+            <div class="progress-card">
+                <h3>📚 Ton dictionnaire personnel</h3>
+                <div class="vocab-list" id="vocab-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Translation Popup -->
+    <div class="translation-popup" id="translation-popup">
+        <div class="translation-header">
+            <h3>Traduction</h3>
+            <button class="translation-close" onclick="app.closeTranslation()">✕</button>
+        </div>
+        <div class="translation-original" id="translation-original"></div>
+        <div class="translation-text" id="translation-text"></div>
+        <div class="translation-audio">
+            <button class="audio-btn" onclick="app.playAudio('us')">
+                🇺🇸 Accent américain
+            </button>
+            <button class="audio-btn" onclick="app.playAudio('uk')">
+                🇬🇧 Accent britannique
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            currentStory: null,
+            currentSentenceIndex: 0,
+            isSimplified: false,
+            isAudioPlaying: false,
+            fontSize: 1.3,
+            vocabulary: [],
+            progress: {
+                streak: 0,
+                points: 0,
+                storiesRead: 0,
+                wordsLearned: 0,
+                readingTime: 0
+            },
+
+            stories: [
+                {
+                    id: 1,
+                    title: "The Lost Key",
+                    level: "Débutant",
+                    levelColor: "#6bcf7f",
+                    emoji: "🔑",
+                    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    desc: "Une histoire mystérieuse sur une clé perdue",
+                    duration: "5 min",
+                    words: 250,
+                    sentences: [
+                        {
+                            en: "Emma walked through the old garden.",
+                            simple: "Emma walked in the garden.",
+                            fr: "Emma marchait dans le vieux jardin.",
+                            audio: true
+                        },
+                        {
+                            en: "She was looking for something important.",
+                            simple: "She looked for something.",
+                            fr: "Elle cherchait quelque chose d'important.",
+                            audio: true
+                        },
+                        {
+                            en: "Yesterday, she lost her grandmother's golden key.",
+                            simple: "She lost a golden key yesterday.",
+                            fr: "Hier, elle a perdu la clé dorée de sa grand-mère.",
+                            audio: true
+                        },
+                        {
+                            en: "The key could open a mysterious door in the attic.",
+                            simple: "The key opens a special door.",
+                            fr: "La clé pouvait ouvrir une porte mystérieuse dans le grenier.",
+                            audio: true
+                        },
+                        {
+                            en: "Emma searched under every bush and flower.",
+                            simple: "Emma looked everywhere.",
+                            fr: "Emma chercha sous chaque buisson et fleur.",
+                            audio: true
+                        },
+                        {
+                            en: "Suddenly, she saw something shining near the fountain.",
+                            simple: "She saw something shiny.",
+                            fr: "Soudain, elle vit quelque chose briller près de la fontaine.",
+                            audio: true
+                        },
+                        {
+                            en: "There it was! The golden key was lying on the ground.",
+                            simple: "The key was on the ground!",
+                            fr: "La voilà ! La clé dorée était posée sur le sol.",
+                            audio: true
+                        },
+                        {
+                            en: "Emma picked it up with trembling hands.",
+                            simple: "Emma picked up the key.",
+                            fr: "Emma la ramassa avec des mains tremblantes.",
+                            audio: true
+                        },
+                        {
+                            en: "She ran back to the house, excited to unlock the door.",
+                            simple: "She ran to the house.",
+                            fr: "Elle courut vers la maison, excitée d'ouvrir la porte.",
+                            audio: true
+                        },
+                        {
+                            en: "What secrets would she discover in the attic?",
+                            simple: "What would she find?",
+                            fr: "Quels secrets allait-elle découvrir dans le grenier ?",
+                            audio: true
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: "Qu'a perdu Emma ?",
+                            options: [
+                                "Une clé dorée",
+                                "Un collier",
+                                "Un livre",
+                                "Une photo"
+                            ],
+                            correct: 0
+                        },
+                        {
+                            question: "Où Emma a-t-elle trouvé la clé ?",
+                            options: [
+                                "Dans la maison",
+                                "Près de la fontaine",
+                                "Sous un arbre",
+                                "Dans le grenier"
+                            ],
+                            correct: 1
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "The Magic Bookshop",
+                    level: "Intermédiaire",
+                    levelColor: "#ffd93d",
+                    emoji: "📚",
+                    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                    desc: "Une librairie enchantée qui apparaît la nuit",
+                    duration: "7 min",
+                    words: 380,
+                    sentences: [
+                        {
+                            en: "The bookshop appeared only at midnight.",
+                            simple: "The shop appeared at midnight.",
+                            fr: "La librairie n'apparaissait qu'à minuit.",
+                            audio: true
+                        },
+                        {
+                            en: "Tom had heard rumors about it from his classmates.",
+                            simple: "Tom heard about it from friends.",
+                            fr: "Tom avait entendu des rumeurs à son sujet de ses camarades.",
+                            audio: true
+                        },
+                        {
+                            en: "They said the books inside could change your life.",
+                            simple: "The books were special.",
+                            fr: "Ils disaient que les livres à l'intérieur pouvaient changer votre vie.",
+                            audio: true
+                        },
+                        {
+                            en: "One night, curiosity got the better of him.",
+                            simple: "One night, he decided to go.",
+                            fr: "Une nuit, la curiosité l'emporta sur lui.",
+                            audio: true
+                        },
+                        {
+                            en: "He walked down the empty street towards the old address.",
+                            simple: "He walked to the address.",
+                            fr: "Il marcha dans la rue vide vers la vieille adresse.",
+                            audio: true
+                        },
+                        {
+                            en: "As the clock struck twelve, a warm light appeared.",
+                            simple: "At midnight, a light appeared.",
+                            fr: "Lorsque l'horloge sonna minuit, une lumière chaleureuse apparut.",
+                            audio: true
+                        },
+                        {
+                            en: "The door opened by itself with a gentle creak.",
+                            simple: "The door opened.",
+                            fr: "La porte s'ouvrit d'elle-même avec un léger grincement.",
+                            audio: true
+                        },
+                        {
+                            en: "Inside, thousands of books floated in the air.",
+                            simple: "Books floated inside.",
+                            fr: "À l'intérieur, des milliers de livres flottaient dans les airs.",
+                            audio: true
+                        },
+                        {
+                            en: "An elderly man with kind eyes greeted him warmly.",
+                            simple: "An old man greeted him.",
+                            fr: "Un homme âgé aux yeux bienveillants l'accueillit chaleureusement.",
+                            audio: true
+                        },
+                        {
+                            en: "Each book here contains a different destiny, he whispered.",
+                            simple: "Each book is special, he said.",
+                            fr: "Chaque livre ici contient un destin différent, chuchota-t-il.",
+                            audio: true
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: "À quelle heure la librairie apparaît-elle ?",
+                            options: [
+                                "À minuit",
+                                "À midi",
+                                "Le matin",
+                                "L'après-midi"
+                            ],
+                            correct: 0
+                        },
+                        {
+                            question: "Que font les livres dans la librairie ?",
+                            options: [
+                                "Ils tombent",
+                                "Ils brûlent",
+                                "Ils flottent",
+                                "Ils parlent"
+                            ],
+                            correct: 2
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "The Time Traveler",
+                    level: "Avancé",
+                    levelColor: "#ff6b6b",
+                    emoji: "⏰",
+                    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                    desc: "Un voyage dans le temps qui change tout",
+                    duration: "10 min",
+                    words: 520,
+                    sentences: [
+                        {
+                            en: "Professor Stevens had spent twenty years perfecting his invention.",
+                            simple: "Professor Stevens made a special machine.",
+                            fr: "Le professeur Stevens avait passé vingt ans à perfectionner son invention.",
+                            audio: true
+                        },
+                        {
+                            en: "The temporal displacement device sat in his basement laboratory.",
+                            simple: "His time machine was in the basement.",
+                            fr: "Le dispositif de déplacement temporel se trouvait dans son laboratoire au sous-sol.",
+                            audio: true
+                        },
+                        {
+                            en: "Tonight would be the first human trial, and he would be the subject.",
+                            simple: "Tonight, he would test it.",
+                            fr: "Ce soir serait le premier essai humain, et il serait le sujet.",
+                            audio: true
+                        },
+                        {
+                            en: "He set the coordinates for London, 1895, the height of the Victorian era.",
+                            simple: "He set it for London, 1895.",
+                            fr: "Il régla les coordonnées pour Londres, 1895, l'apogée de l'ère victorienne.",
+                            audio: true
+                        },
+                        {
+                            en: "With a deep breath, he pressed the activation button.",
+                            simple: "He pressed the button.",
+                            fr: "Avec une profonde inspiration, il appuya sur le bouton d'activation.",
+                            audio: true
+                        },
+                        {
+                            en: "Reality twisted and bent around him like melting glass.",
+                            simple: "Everything changed around him.",
+                            fr: "La réalité se tordit et se plia autour de lui comme du verre fondu.",
+                            audio: true
+                        },
+                        {
+                            en: "When his vision cleared, he stood in a foggy London street.",
+                            simple: "He arrived in old London.",
+                            fr: "Quand sa vision s'éclaircit, il se tenait dans une rue brumeuse de Londres.",
+                            audio: true
+                        },
+                        {
+                            en: "Horse-drawn carriages clattered past while gaslights flickered overhead.",
+                            simple: "Old carriages passed by.",
+                            fr: "Des calèches passaient bruyamment tandis que les lampes à gaz vacillaient au-dessus.",
+                            audio: true
+                        },
+                        {
+                            en: "He had done it - he had actually traveled through time!",
+                            simple: "It worked! He traveled in time!",
+                            fr: "Il l'avait fait - il avait vraiment voyagé dans le temps !",
+                            audio: true
+                        },
+                        {
+                            en: "But then he noticed something disturbing: his return device was malfunctioning.",
+                            simple: "But his return device was broken.",
+                            fr: "Mais il remarqua alors quelque chose de troublant : son dispositif de retour dysfonctionnait.",
+                            audio: true
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: "Combien de temps le professeur a-t-il travaillé sur son invention ?",
+                            options: [
+                                "10 ans",
+                                "15 ans",
+                                "20 ans",
+                                "25 ans"
+                            ],
+                            correct: 2
+                        },
+                        {
+                            question: "Quel est le problème à la fin ?",
+                            options: [
+                                "Il est perdu",
+                                "Le dispositif de retour ne fonctionne pas",
+                                "Il est blessé",
+                                "Il ne peut pas respirer"
+                            ],
+                            correct: 1
+                        }
+                    ]
+                }
+            ],
+
+            translations: {
+                "walked": "marché",
+                "through": "à travers",
+                "old": "vieux",
+                "garden": "jardin",
+                "looking": "cherchait",
+                "something": "quelque chose",
+                "important": "important",
+                "yesterday": "hier",
+                "lost": "perdu",
+                "grandmother": "grand-mère",
+                "golden": "doré(e)",
+                "key": "clé",
+                "could": "pouvait",
+                "open": "ouvrir",
+                "mysterious": "mystérieux",
+                "door": "porte",
+                "attic": "grenier",
+                "searched": "chercha",
+                "under": "sous",
+                "every": "chaque",
+                "bush": "buisson",
+                "flower": "fleur",
+                "suddenly": "soudain",
+                "saw": "vit",
+                "shining": "briller",
+                "near": "près de",
+                "fountain": "fontaine",
+                "lying": "posé",
+                "ground": "sol",
+                "picked": "ramassa",
+                "trembling": "tremblant",
+                "hands": "mains",
+                "ran": "courut",
+                "back": "retour",
+                "house": "maison",
+                "excited": "excité",
+                "unlock": "ouvrir",
+                "secrets": "secrets",
+                "discover": "découvrir",
+                "bookshop": "librairie",
+                "appeared": "apparut",
+                "only": "seulement",
+                "midnight": "minuit",
+                "heard": "entendu",
+                "rumors": "rumeurs",
+                "classmates": "camarades",
+                "said": "dit",
+                "books": "livres",
+                "inside": "à l'intérieur",
+                "change": "changer",
+                "life": "vie",
+                "night": "nuit",
+                "curiosity": "curiosité",
+                "better": "mieux",
+                "empty": "vide",
+                "street": "rue",
+                "towards": "vers",
+                "address": "adresse",
+                "clock": "horloge",
+                "struck": "sonna",
+                "twelve": "douze",
+                "warm": "chaud",
+                "light": "lumière",
+                "opened": "ouvrit",
+                "itself": "elle-même",
+                "gentle": "léger",
+                "creak": "grincement",
+                "thousands": "milliers",
+                "floated": "flottaient",
+                "air": "air",
+                "elderly": "âgé",
+                "man": "homme",
+                "kind": "bienveillant",
+                "eyes": "yeux",
+                "greeted": "accueillit",
+                "warmly": "chaleureusement",
+                "each": "chaque",
+                "contains": "contient",
+                "different": "différent",
+                "destiny": "destin",
+                "whispered": "chuchota"
+            },
+
+            init() {
+                this.loadProgress();
+                this.renderStories();
+                this.setupNavigation();
+                this.setupServiceWorker();
+                this.updateStats();
+            },
+
+            setupServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('data:text/javascript;base64,').catch(() => {});
+                }
+            },
+
+            loadProgress() {
+                const saved = localStorage.getItem('readflow-progress');
+                if (saved) {
+                    this.progress = JSON.parse(saved);
+                }
+                const savedVocab = localStorage.getItem('readflow-vocabulary');
+                if (savedVocab) {
+                    this.vocabulary = JSON.parse(savedVocab);
+                }
+            },
+
+            saveProgress() {
+                localStorage.setItem('readflow-progress', JSON.stringify(this.progress));
+                localStorage.setItem('readflow-vocabulary', JSON.stringify(this.vocabulary));
+            },
+
+            updateStats() {
+                document.getElementById('streak').textContent = this.progress.streak || 0;
+                document.getElementById('points').textContent = this.progress.points || 0;
+                document.getElementById('progress-streak').textContent = this.progress.streak || 0;
+                document.getElementById('progress-stories').textContent = this.progress.storiesRead || 0;
+                document.getElementById('progress-words').textContent = this.progress.wordsLearned || 0;
+                document.getElementById('progress-time').textContent = Math.floor(this.progress.readingTime || 0) + 'min';
+                this.renderVocabulary();
+            },
+
+            renderStories() {
+                const grid = document.getElementById('stories-grid');
+                grid.innerHTML = this.stories.map(story => `
+                    <div class="story-card" onclick="app.openStory(${story.id})">
+                        <div class="story-image" style="background: ${story.gradient}">
+                            <span>${story.emoji}</span>
+                        </div>
+                        <div class="story-content">
+                            <span class="story-level" style="background: ${story.levelColor}">${story.level}</span>
+                            <h3 class="story-title">${story.title}</h3>
+                            <p class="story-desc">${story.desc}</p>
+                            <div class="story-meta">
+                                <span>⏱️ ${story.duration}</span>
+                                <span>📝 ${story.words} mots</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            setupNavigation() {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        if (e.target.dataset.tab) {
+                            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                            e.target.classList.add('active');
+                            document.getElementById(e.target.dataset.tab).classList.add('active');
+                        }
+                    });
+                });
+            },
+
+            openStory(id) {
+                this.currentStory = this.stories.find(s => s.id === id);
+                this.currentSentenceIndex = 0;
+                
+                document.querySelectorAll('.nav-tab').forEach(t => {
+                    t.classList.remove('active');
+                    if (t.dataset.tab === 'reader') {
+                        t.style.display = 'block';
+                        t.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById('reader').classList.add('active');
+                
+                this.renderReader();
+                
+                // Start reading timer
+                this.startReadingTimer = Date.now();
+            },
+
+            renderReader() {
+                document.getElementById('reader-title').textContent = this.currentStory.title;
+                const content = document.getElementById('reader-content');
+                
+                const text = this.currentStory.sentences.map((sentence, idx) => {
+                    const textToShow = this.isSimplified ? sentence.simple : sentence.en;
+                    const words = textToShow.split(' ').map(word => {
+                        const cleanWord = word.replace(/[.,!?;]/g, '').toLowerCase();
+                        return `<span class="word" data-word="${cleanWord}" onclick="app.translateWord('${cleanWord}')">${word}</span>`;
+                    }).join(' ');
+                    return `<span class="sentence" data-index="${idx}" onclick="app.translateSentence(${idx})">${words}</span> `;
+                }).join('');
+                
+                content.innerHTML = text;
+                this.updateProgress();
+            },
+
+            updateProgress() {
+                const progress = ((this.currentSentenceIndex + 1) / this.currentStory.sentences.length) * 100;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    setTimeout(() => this.showQuiz(), 1000);
+                }
+            },
+
+            translateWord(word) {
+                const translation = this.translations[word] || "Traduction non disponible";
+                this.showTranslation(word, translation, false);
+                this.addToVocabulary(word, translation);
+            },
+
+            translateSentence(index) {
+                const sentence = this.currentStory.sentences[index];
+                this.showTranslation(
+                    this.isSimplified ? sentence.simple : sentence.en,
+                    sentence.fr,
+                    true
+                );
+                this.currentSentenceIndex = Math.max(this.currentSentenceIndex, index);
+                this.updateProgress();
+            },
+
+            showTranslation(original, translation, isSentence) {
+                document.getElementById('translation-original').textContent = original;
+                document.getElementById('translation-text').textContent = translation;
+                document.getElementById('translation-popup').classList.add('visible');
+                
+                if (!isSentence) {
+                    this.progress.points += 5;
+                    this.updateStats();
+                }
+            },
+
+            closeTranslation() {
+                document.getElementById('translation-popup').classList.remove('visible');
+            },
+
+            playAudio(accent) {
+                // Simulation de la lecture audio
+                const btn = event.target;
+                btn.innerHTML = '<span class="loading"></span> Lecture...';
+                
+                // Utiliser Web Speech API pour la synthèse vocale
+                const text = document.getElementById('translation-original').textContent;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = accent === 'uk' ? 'en-GB' : 'en-US';
+                utterance.rate = 0.9;
+                
+                utterance.onend = () => {
+                    btn.innerHTML = accent === 'uk' ? '🇬🇧 Accent britannique' : '🇺🇸 Accent américain';
+                };
+                
+                speechSynthesis.speak(utterance);
+            },
+
+            toggleSimplify() {
+                this.isSimplified = !this.isSimplified;
+                const btn = document.getElementById('simplifyBtn');
+                const content = document.getElementById('reader-content');
+                
+                if (this.isSimplified) {
+                    btn.classList.add('active');
+                    content.classList.add('simplified');
+                } else {
+                    btn.classList.remove('active');
+                    content.classList.remove('simplified');
+                }
+                
+                this.renderReader();
+            },
+
+            toggleAudio() {
+                this.isAudioPlaying = !this.isAudioPlaying;
+                const btn = document.getElementById('audioBtn');
+                
+                if (this.isAudioPlaying) {
+                    btn.classList.add('active');
+                    this.playStoryAudio();
+                } else {
+                    btn.classList.remove('active');
+                    speechSynthesis.cancel();
+                }
+            },
+
+            playStoryAudio() {
+                if (!this.isAudioPlaying) return;
+                
+                const sentence = this.currentStory.sentences[this.currentSentenceIndex];
+                const text = this.isSimplified ? sentence.simple : sentence.en;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85;
+                
+                utterance.onend = () => {
+                    if (this.currentSentenceIndex < this.currentStory.sentences.length - 1) {
+                        this.currentSentenceIndex++;
+                        this.updateProgress();
+                        setTimeout(() => this.playStoryAudio(), 800);
+                    } else {
+                        this.isAudioPlaying = false;
+                        document.getElementById('audioBtn').classList.remove('active');
+                    }
+                };
+                
+                speechSynthesis.speak(utterance);
+            },
+
+            increaseFontSize() {
+                this.fontSize = Math.min(this.fontSize + 0.1, 2);
+                document.getElementById('reader-content').style.fontSize = this.fontSize + 'rem';
+            },
+
+            decreaseFontSize() {
+                this.fontSize = Math.max(this.fontSize - 0.1, 1);
+                document.getElementById('reader-content').style.fontSize = this.fontSize + 'rem';
+            },
+
+            showQuiz() {
+                const container = document.getElementById('quiz-container');
+                const quiz = this.currentStory.quiz[0];
+                
+                container.innerHTML = `
+                    <h3 class="quiz-question">📝 ${quiz.question}</h3>
+                    <div class="quiz-options">
+                        ${quiz.options.map((option, idx) => `
+                            <div class="quiz-option" onclick="app.checkAnswer(${idx}, ${quiz.correct})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.style.display = 'block';
+            },
+
+            checkAnswer(selected, correct) {
+                const options = document.querySelectorAll('.quiz-option');
+                options[selected].classList.add(selected === correct ? 'correct' : 'wrong');
+                options[correct].classList.add('correct');
+                
+                options.forEach(opt => opt.style.pointerEvents = 'none');
+                
+                if (selected === correct) {
+                    this.progress.points += 20;
+                    setTimeout(() => {
+                        alert('✅ Bravo ! Histoire terminée !');
+                        this.completeStory();
+                    }, 1000);
+                } else {
+                    this.progress.points += 5;
+                    setTimeout(() => {
+                        alert('❌ Pas tout à fait... mais tu as gagné 5 points !');
+                        this.completeStory();
+                    }, 1000);
+                }
+                
+                this.updateStats();
+            },
+
+            completeStory() {
+                // Update reading time
+                if (this.startReadingTimer) {
+                    const minutes = Math.floor((Date.now() - this.startReadingTimer) / 60000);
+                    this.progress.readingTime = (this.progress.readingTime || 0) + minutes;
+                }
+                
+                this.progress.storiesRead = (this.progress.storiesRead || 0) + 1;
+                this.progress.streak = (this.progress.streak || 0) + 1;
+                this.saveProgress();
+                this.updateStats();
+                this.goBack();
+            },
+
+            addToVocabulary(word, translation) {
+                if (!this.vocabulary.find(v => v.word === word)) {
+                    this.vocabulary.push({ word, translation, date: new Date().toISOString() });
+                    this.progress.wordsLearned = this.vocabulary.length;
+                    this.saveProgress();
+                    this.updateStats();
+                }
+            },
+
+            renderVocabulary() {
+                const list = document.getElementById('vocab-list');
+                if (this.vocabulary.length === 0) {
+                    list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Commence à lire pour construire ton vocabulaire !</p>';
+                } else {
+                    list.innerHTML = this.vocabulary.slice().reverse().map(item => `
+                        <div class="vocab-item">
+                            <div>
+                                <div class="vocab-word">${item.word}</div>
+                                <div class="vocab-translation">${item.translation}</div>
+                            </div>
+                            <button class="control-btn" onclick="app.speakWord('${item.word}')">🔊</button>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            speakWord(word) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            },
+
+            goBack() {
+                document.querySelectorAll('.nav-tab').forEach(t => {
+                    t.classList.remove('active');
+                    if (t.dataset.tab === 'reader') {
+                        t.style.display = 'none';
+                    }
+                    if (t.dataset.tab === 'library') {
+                        t.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById('library').classList.add('active');
+                
+                speechSynthesis.cancel();
+                this.isAudioPlaying = false;
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+        // Close translation popup when clicking outside
+        document.getElementById('translation-popup').addEventListener('click', (e) => {
+            if (e.target.id === 'translation-popup') {
+                app.closeTranslation();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>ReadFlow - Hors ligne</title>
+		<meta name="theme-color" content="#ff6b6b" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			body {
+				font-family:
+					'DM Sans',
+					-apple-system,
+					BlinkMacSystemFont,
+					sans-serif;
+				background: #1a162e;
+				color: #e8e6f0;
+				min-height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 2rem;
+			}
+			.container {
+				text-align: center;
+				max-width: 420px;
+			}
+			.icon {
+				font-size: 4rem;
+				margin-bottom: 1.5rem;
+				animation: float 3s ease-in-out infinite;
+			}
+			h1 {
+				font-family: 'Crimson Pro', Georgia, serif;
+				font-size: 1.75rem;
+				margin-bottom: 0.75rem;
+				color: #ff6b6b;
+			}
+			p {
+				color: #a09cb5;
+				line-height: 1.6;
+				margin-bottom: 2rem;
+			}
+			button {
+				background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+				color: white;
+				border: none;
+				padding: 0.875rem 2rem;
+				border-radius: 2rem;
+				font-size: 1rem;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.2s;
+			}
+			button:hover {
+				transform: scale(1.05);
+			}
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-10px);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="icon">📡</div>
+			<h1>Vous êtes hors ligne</h1>
+			<p>
+				Cette page nécessite une connexion internet. Vos données sauvegardées (progression,
+				vocabulaire) restent accessibles sur la page principale.
+			</p>
+			<button onclick="location.reload()">Réessayer</button>
+		</div>
+	</body>
+</html>

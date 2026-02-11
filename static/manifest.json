@@ -1,0 +1,37 @@
+{
+	"name": "ReadFlow",
+	"short_name": "ReadFlow",
+	"description": "Apprends l'anglais en lisant des histoires",
+	"start_url": ".",
+	"scope": ".",
+	"display": "standalone",
+	"orientation": "portrait-primary",
+	"background_color": "#1a162e",
+	"theme_color": "#ff6b6b",
+	"lang": "fr",
+	"categories": ["education", "books"],
+	"icons": [
+		{
+			"src": "icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "icon-maskable-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "icon-maskable-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
+}

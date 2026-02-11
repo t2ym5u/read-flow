@@ -1,0 +1,15 @@
+<svg width="512" height="512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#1a162e"/>
+  <path d="M256 156 C208 156 156 172 140 184 L140 340 C156 328 208 316 256 316 C304 316 356 328 372 340 L372 184 C356 172 304 156 256 156Z" fill="#2a2548"/>
+  <path d="M140 184 C156 172 208 156 256 156 C304 156 356 172 372 184" stroke="#ff6b6b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M140 340 C156 328 208 316 256 316 C304 316 356 328 372 340" stroke="#ff6b6b" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <line x1="256" y1="156" x2="256" y2="316" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="168" y1="212" x2="236" y2="204" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="168" y1="240" x2="236" y2="232" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="168" y1="268" x2="236" y2="260" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="276" y1="204" x2="344" y2="212" stroke="#6bcf7f" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="276" y1="232" x2="344" y2="240" stroke="#6bcf7f" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <line x1="276" y1="260" x2="344" y2="268" stroke="#6bcf7f" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <path d="M164 364 Q210 354 256 364 Q302 374 348 364" stroke="#ff6b6b" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M184 382 Q220 374 256 382 Q292 390 328 382" stroke="#6bcf7f" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.35"/>
+</svg>
