@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { AppState } from '$lib/types';
+import type { AppState } from "$lib/types";
 
-	export let state: AppState;
+export let state: AppState;
 </script>
 
 <div class="content-section active" id="progress">

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { StoryMeta } from '$lib/types';
+import type { StoryMeta } from "$lib/types";
 
-	export let stories: StoryMeta[];
-	export let openStory: (id: number) => void;
+export let stories: StoryMeta[];
+export let openStory: (id: number) => void;
 </script>
 
 <div class="content-section active" id="library">

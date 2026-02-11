@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { AppState } from '$lib/types';
+import type { AppState } from "$lib/types";
 
-	export let state: AppState | null;
+export let state: AppState | null;
 </script>
 
 <div class="header">

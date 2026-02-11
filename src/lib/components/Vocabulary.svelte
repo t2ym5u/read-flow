@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { appStore } from '$lib/appStore';
-	import type { AppState } from '$lib/types';
+import { appStore } from "$lib/appStore";
+import type { AppState } from "$lib/types";
 
-	export let state: AppState;
+export let state: AppState;
 
-	function speakWord(word: string) {
-		appStore.speakWord(word);
-	}
+function speakWord(word: string) {
+	appStore.speakWord(word);
+}
 </script>
 
 <div class="content-section active" id="vocabulary">

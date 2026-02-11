@@ -1,25 +1,25 @@
 <script lang="ts">
-	export let translationData: {
-		original: string;
-		translation: string;
-		isSentence: boolean;
-	};
-	export let closeTranslation: () => void;
-	export let playAudio: (accent: 'us' | 'uk') => void;
+export let translationData: {
+	original: string;
+	translation: string;
+	isSentence: boolean;
+};
+export let closeTranslation: () => void;
+export let playAudio: (accent: "us" | "uk") => void;
 
-	let isPlaying = false;
+let isPlaying = false;
 
-	function playAudioUS() {
-		isPlaying = true;
-		playAudio('us');
-		setTimeout(() => (isPlaying = false), 2000);
-	}
+function playAudioUS() {
+	isPlaying = true;
+	playAudio("us");
+	setTimeout(() => (isPlaying = false), 2000);
+}
 
-	function playAudioUK() {
-		isPlaying = true;
-		playAudio('uk');
-		setTimeout(() => (isPlaying = false), 2000);
-	}
+function playAudioUK() {
+	isPlaying = true;
+	playAudio("uk");
+	setTimeout(() => (isPlaying = false), 2000);
+}
 </script>
 
 <div class="translation-popup visible">

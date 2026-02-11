@@ -1,32 +1,32 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
-	import '$lib/app.css';
-	import { base } from '$app/paths';
-	import { onMount } from 'svelte';
+import favicon from "$lib/assets/favicon.svg";
+import "$lib/app.css";
+import { onMount } from "svelte";
+import { base } from "$app/paths";
 
-	export let children;
+export let children;
 
-	let isOffline = false;
+let isOffline = false;
 
-	// Register service worker
-	if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-		navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {});
-	}
+// Register service worker
+if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+	navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {});
+}
 
-	onMount(() => {
-		isOffline = !navigator.onLine;
+onMount(() => {
+	isOffline = !navigator.onLine;
 
-		const goOnline = () => (isOffline = false);
-		const goOffline = () => (isOffline = true);
+	const goOnline = () => (isOffline = false);
+	const goOffline = () => (isOffline = true);
 
-		window.addEventListener('online', goOnline);
-		window.addEventListener('offline', goOffline);
+	window.addEventListener("online", goOnline);
+	window.addEventListener("offline", goOffline);
 
-		return () => {
-			window.removeEventListener('online', goOnline);
-			window.removeEventListener('offline', goOffline);
-		};
-	});
+	return () => {
+		window.removeEventListener("online", goOnline);
+		window.removeEventListener("offline", goOffline);
+	};
+});
 </script>
 
 <svelte:head>

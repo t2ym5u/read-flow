@@ -1,104 +1,104 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { appStore } from '$lib/appStore';
-	import type { Story, AppState } from '$lib/types';
+import { onMount } from "svelte";
+import { appStore } from "$lib/appStore";
+import type { AppState, Story } from "$lib/types";
 
-	export let story: Story;
-	export let state: AppState;
-	export let translateWord: (word: string) => void;
-	export let translateSentence: (index: number) => void;
+export let story: Story;
+export let state: AppState;
+export let translateWord: (word: string) => void;
+export let translateSentence: (index: number) => void;
 
-	let showQuiz = false;
-	let showQuizButton = false;
-	let quizAnswered = false;
-	let selectedAnswer = -1;
-	let progress = 0;
-	let readerTextEl: HTMLElement;
-	let endSentinel: HTMLElement;
+let showQuiz = false;
+let showQuizButton = false;
+let quizAnswered = false;
+let selectedAnswer = -1;
+let progress = 0;
+let readerTextEl: HTMLElement;
+let endSentinel: HTMLElement;
 
-	$: currentQuiz = story.quiz[0];
+$: currentQuiz = story.quiz[0];
 
-	onMount(() => {
-		const updateProgress = () => {
-			if (!readerTextEl) return;
-			const rect = readerTextEl.getBoundingClientRect();
-			const totalHeight = rect.height;
-			if (totalHeight === 0) return;
-			const scrolled = window.innerHeight - rect.top;
-			progress = Math.min(100, Math.max(0, (scrolled / totalHeight) * 100));
-		};
+onMount(() => {
+	const updateProgress = () => {
+		if (!readerTextEl) return;
+		const rect = readerTextEl.getBoundingClientRect();
+		const totalHeight = rect.height;
+		if (totalHeight === 0) return;
+		const scrolled = window.innerHeight - rect.top;
+		progress = Math.min(100, Math.max(0, (scrolled / totalHeight) * 100));
+	};
 
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting && !showQuizButton && !showQuiz) {
-					showQuizButton = true;
-				}
-			},
-			{ threshold: 0.5 }
-		);
-
-		if (endSentinel) observer.observe(endSentinel);
-
-		window.addEventListener('scroll', updateProgress, { passive: true });
-		updateProgress();
-
-		// Desktop: if text fits on screen, sentinel is already visible
-		requestAnimationFrame(() => {
-			updateProgress();
-			if (endSentinel) {
-				const rect = endSentinel.getBoundingClientRect();
-				if (rect.top < window.innerHeight) {
-					showQuizButton = true;
-				}
+	const observer = new IntersectionObserver(
+		([entry]) => {
+			if (entry.isIntersecting && !showQuizButton && !showQuiz) {
+				showQuizButton = true;
 			}
-		});
+		},
+		{ threshold: 0.5 },
+	);
 
-		return () => {
-			observer.disconnect();
-			window.removeEventListener('scroll', updateProgress);
-		};
+	if (endSentinel) observer.observe(endSentinel);
+
+	window.addEventListener("scroll", updateProgress, { passive: true });
+	updateProgress();
+
+	// Desktop: if text fits on screen, sentinel is already visible
+	requestAnimationFrame(() => {
+		updateProgress();
+		if (endSentinel) {
+			const rect = endSentinel.getBoundingClientRect();
+			if (rect.top < window.innerHeight) {
+				showQuizButton = true;
+			}
+		}
 	});
 
-	function startQuiz() {
-		showQuizButton = false;
-		showQuiz = true;
-	}
+	return () => {
+		observer.disconnect();
+		window.removeEventListener("scroll", updateProgress);
+	};
+});
 
-	function goBack() {
-		appStore.goBack();
-	}
+function startQuiz() {
+	showQuizButton = false;
+	showQuiz = true;
+}
 
-	function toggleSimplify() {
-		appStore.toggleSimplify();
-	}
+function goBack() {
+	appStore.goBack();
+}
 
-	function toggleAudio() {
-		appStore.toggleAudio();
-	}
+function toggleSimplify() {
+	appStore.toggleSimplify();
+}
 
-	function increaseFontSize() {
-		appStore.increaseFontSize();
-	}
+function toggleAudio() {
+	appStore.toggleAudio();
+}
 
-	function decreaseFontSize() {
-		appStore.decreaseFontSize();
-	}
+function increaseFontSize() {
+	appStore.increaseFontSize();
+}
 
-	function checkAnswer(selected: number, correct: number) {
-		selectedAnswer = selected;
-		quizAnswered = true;
-		appStore.answerQuiz(selected, correct);
+function decreaseFontSize() {
+	appStore.decreaseFontSize();
+}
 
-		setTimeout(() => {
-			if (selected === correct) {
-				alert('✅ Bravo ! Histoire terminée !');
-				appStore.completeStory();
-			} else {
-				alert('❌ Pas tout à fait... mais tu as gagné 5 points !');
-				appStore.completeStory();
-			}
-		}, 1000);
-	}
+function checkAnswer(selected: number, correct: number) {
+	selectedAnswer = selected;
+	quizAnswered = true;
+	appStore.answerQuiz(selected, correct);
+
+	setTimeout(() => {
+		if (selected === correct) {
+			alert("✅ Bravo ! Histoire terminée !");
+			appStore.completeStory();
+		} else {
+			alert("❌ Pas tout à fait... mais tu as gagné 5 points !");
+			appStore.completeStory();
+		}
+	}, 1000);
+}
 </script>
 
 <div class="content-section active" id="reader">

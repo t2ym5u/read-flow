@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let currentTab: string;
-	export let switchTab: (tab: string) => void;
+export let currentTab: string;
+export let switchTab: (tab: string) => void;
 </script>
 
 <div class="nav-tabs">
