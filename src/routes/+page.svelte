@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { appStore } from "$lib/appStore";
+import AboutModal from "$lib/components/AboutModal.svelte";
 import Header from "$lib/components/Header.svelte";
 import Library from "$lib/components/Library.svelte";
 import Navigation from "$lib/components/Navigation.svelte";
@@ -13,6 +14,7 @@ import type { AppState } from "$lib/types";
 
 let currentTab = "library";
 let showTranslation = false;
+let showAbout = false;
 let translationData = { original: "", translation: "", isSentence: false };
 let state: AppState | null = null;
 
@@ -93,7 +95,7 @@ $: if (state.currentStory) {
 <div class="bg-decoration"></div>
 
 <div class="app-container">
-	<Header {state} />
+	<Header {state} onopenabout={() => (showAbout = true)} />
 
 	<Navigation {currentTab} {switchTab} />
 
@@ -121,4 +123,9 @@ $: if (state.currentStory) {
 <!-- Translation Popup -->
 {#if showTranslation}
 	<TranslationPopup {translationData} {closeTranslation} {playAudio} />
+{/if}
+
+<!-- About Modal -->
+{#if showAbout}
+	<AboutModal onclose={() => (showAbout = false)} />
 {/if}

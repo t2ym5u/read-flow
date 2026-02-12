@@ -8,9 +8,33 @@ export let children;
 
 let isOffline = false;
 
-// Register service worker
+const VERSION_KEY = "readflow-version";
+
+async function handleVersionUpdate() {
+	const currentVersion = __APP_VERSION__;
+	const storedVersion = localStorage.getItem(VERSION_KEY);
+
+	if (storedVersion && storedVersion !== currentVersion) {
+		// Clear all SW caches
+		const keys = await caches.keys();
+		await Promise.all(keys.map((key) => caches.delete(key)));
+
+		// Unregister existing service workers
+		const registrations = await navigator.serviceWorker.getRegistrations();
+		await Promise.all(registrations.map((r) => r.unregister()));
+
+		// Save new version and re-register SW
+		localStorage.setItem(VERSION_KEY, currentVersion);
+		navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {});
+	} else {
+		localStorage.setItem(VERSION_KEY, currentVersion);
+		navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {});
+	}
+}
+
+// Register service worker with version check
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-	navigator.serviceWorker.register(`${base}/sw.js`).catch(() => {});
+	handleVersionUpdate();
 }
 
 onMount(() => {
