@@ -59,6 +59,7 @@ export interface Progress {
 	wordsLearned: number;
 	readingTime: number;
 	lastActiveDate: string | null;
+	readStoryIds: number[];
 }
 
 export interface AppState {

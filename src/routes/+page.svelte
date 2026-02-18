@@ -100,7 +100,7 @@ $: if (state.currentStory) {
 
 	<!-- Library Section -->
 	{#if currentTab === 'library'}
-		<Library stories={storyMetas} {openStory} />
+		<Library stories={storyMetas} {openStory} readStoryIds={state?.progress?.readStoryIds ?? []} />
 	{/if}
 
 	<!-- Reader Section -->

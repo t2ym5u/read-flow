@@ -5,6 +5,16 @@ Tous les changements notables de ce projet sont documentés dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/).
 
+## [0.1.2] - 2026-02-18
+
+### Ajouté
+
+- Filtres par niveau dans la bibliothèque (Tous / Débutant / Intermédiaire / Avancé)
+- Toggle "Non lus" pour masquer les histoires déjà lues
+- Stories lues grisées avec badge "✓ Lu"
+- Scroll automatique vers la première histoire non lue au retour à la bibliothèque
+- Tracking des IDs des histoires lues (persisté en localStorage)
+
 ## [0.1.1] - 2026-02-18
 
 ### Modifié

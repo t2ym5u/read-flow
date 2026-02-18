@@ -8,6 +8,7 @@ const initialProgress: Progress = {
 	wordsLearned: 0,
 	readingTime: 0,
 	lastActiveDate: null,
+	readStoryIds: [],
 };
 
 const initialState: AppState = {
@@ -51,6 +52,7 @@ function createAppStore() {
 				const saved = localStorage.getItem("readflow-progress");
 				if (saved) {
 					const progress: Progress = JSON.parse(saved);
+					if (!progress.readStoryIds) progress.readStoryIds = [];
 					const today = getToday();
 					// Reset streak if last active was before yesterday
 					if (
@@ -162,6 +164,13 @@ function createAppStore() {
 					state.progress.readingTime = (state.progress.readingTime || 0) + minutes;
 				}
 				state.progress.storiesRead = (state.progress.storiesRead || 0) + 1;
+
+				if (state.currentStory) {
+					const storyId = state.currentStory.id;
+					if (!state.progress.readStoryIds.includes(storyId)) {
+						state.progress.readStoryIds = [...state.progress.readStoryIds, storyId];
+					}
+				}
 
 				// Streak: increment only once per new day
 				const today = getToday();
