@@ -73,13 +73,12 @@ function getBestVoice(lang: string): SpeechSynthesisVoice | null {
 	return premium || matching[0] || null;
 }
 
-function playAudio(accent: "us" | "uk") {
+function playAudio() {
 	if (typeof window !== "undefined") {
 		speechSynthesis.cancel();
-		const lang = accent === "uk" ? "en-GB" : "en-US";
 		const utterance = new SpeechSynthesisUtterance(translationData.original);
-		utterance.lang = lang;
-		const voice = getBestVoice(lang);
+		utterance.lang = "en-GB";
+		const voice = getBestVoice("en-GB");
 		if (voice) utterance.voice = voice;
 		utterance.rate = 0.9;
 		utterance.pitch = 1;

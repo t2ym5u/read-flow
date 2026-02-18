@@ -200,26 +200,11 @@ export const storyMetas: StoryMeta[] = [
 	},
 ];
 
-const storyLoaders: Record<number, () => Promise<{ default: Story }>> = {
-	1: () => import("./story-1"),
-	2: () => import("./story-2"),
-	3: () => import("./story-3"),
-	4: () => import("./story-4"),
-	5: () => import("./story-5"),
-	6: () => import("./story-6"),
-	7: () => import("./story-7"),
-	8: () => import("./story-8"),
-	9: () => import("./story-9"),
-	10: () => import("./story-10"),
-	11: () => import("./story-11"),
-	12: () => import("./story-12"),
-	13: () => import("./story-13"),
-	14: () => import("./story-14"),
-	15: () => import("./story-15"),
-};
+const storyModules = import.meta.glob<{ default: Story }>("./story-*.ts");
 
 export async function loadStory(id: number): Promise<Story> {
-	const loader = storyLoaders[id];
+	const key = `./story-${id}.ts`;
+	const loader = storyModules[key];
 	if (!loader) throw new Error(`Story ${id} not found`);
 	const mod = await loader();
 	return mod.default;

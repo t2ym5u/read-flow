@@ -5,6 +5,14 @@ Tous les changements notables de ce projet sont documentés dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/).
 
+## [0.1.1] - 2026-02-18
+
+### Modifié
+
+- Suppression du bouton accent américain dans le popup de traduction (accent britannique uniquement)
+- Chargement des stories via `import.meta.glob` — plus besoin de déclarer manuellement chaque story dans `index.ts`
+- Mise à jour des dépendances : Biome 2.4.2, SvelteKit 2.52.0, Svelte 5.51.3, Tailwind CSS 4.2.0, svelte-check 4.4.0
+
 ## [0.1.0] - 2026-02-12
 
 ### Ajouté

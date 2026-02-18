@@ -5,19 +5,13 @@ export let translationData: {
 	isSentence: boolean;
 };
 export let closeTranslation: () => void;
-export let playAudio: (accent: "us" | "uk") => void;
+export let playAudio: () => void;
 
 let isPlaying = false;
 
-function playAudioUS() {
+function handlePlay() {
 	isPlaying = true;
-	playAudio("us");
-	setTimeout(() => (isPlaying = false), 2000);
-}
-
-function playAudioUK() {
-	isPlaying = true;
-	playAudio("uk");
+	playAudio();
 	setTimeout(() => (isPlaying = false), 2000);
 }
 </script>
@@ -30,11 +24,8 @@ function playAudioUK() {
 	<div class="translation-original">{translationData.original}</div>
 	<div class="translation-text">{translationData.translation}</div>
 	<div class="translation-audio">
-		<button class="audio-btn" onclick={playAudioUS} disabled={isPlaying}>
-			🇺🇸 Accent américain
-		</button>
-		<button class="audio-btn" onclick={playAudioUK} disabled={isPlaying}>
-			🇬🇧 Accent britannique
+		<button class="audio-btn" onclick={handlePlay} disabled={isPlaying}>
+			🇬🇧 Écouter
 		</button>
 	</div>
 </div>
