@@ -105,7 +105,13 @@ $: if (state.currentStory) {
 
 	<!-- Reader Section -->
 	{#if currentTab === 'reader' && state.currentStory}
-		<Reader story={state.currentStory} {state} {translateWord} {translateSentence} />
+		<Reader
+			story={state.currentStory}
+			{state}
+			{translateWord}
+			{translateSentence}
+			oncomplete={() => { currentTab = 'library'; }}
+		/>
 	{/if}
 
 	<!-- Progress Section -->

@@ -7,11 +7,14 @@ export let story: Story;
 export let state: AppState;
 export let translateWord: (word: string) => void;
 export let translateSentence: (index: number) => void;
+export let oncomplete: () => void;
 
 let showQuiz = false;
 let showQuizButton = false;
 let quizAnswered = false;
 let selectedAnswer = -1;
+let showCompletion = false;
+let wasCorrect = false;
 let progress = 0;
 let readerTextEl: HTMLElement;
 let endSentinel: HTMLElement;
@@ -87,17 +90,17 @@ function decreaseFontSize() {
 function checkAnswer(selected: number, correct: number) {
 	selectedAnswer = selected;
 	quizAnswered = true;
+	wasCorrect = selected === correct;
 	appStore.answerQuiz(selected, correct);
 
 	setTimeout(() => {
-		if (selected === correct) {
-			alert("✅ Bravo ! Histoire terminée !");
-			appStore.completeStory();
-		} else {
-			alert("❌ Pas tout à fait... mais tu as gagné 5 points !");
-			appStore.completeStory();
-		}
-	}, 1000);
+		showCompletion = true;
+	}, 800);
+}
+
+function finishStory() {
+	appStore.completeStory();
+	oncomplete();
 }
 </script>
 
@@ -179,7 +182,7 @@ function checkAnswer(selected: number, correct: number) {
 			</button>
 		{/if}
 
-		{#if showQuiz}
+		{#if showQuiz && !showCompletion}
 			<div class="quiz-container">
 				<h3 class="quiz-question">📝 {currentQuiz.question}</h3>
 				<div class="quiz-options">
@@ -191,7 +194,7 @@ function checkAnswer(selected: number, correct: number) {
 									: idx === selectedAnswer
 										? 'wrong'
 										: ''
-								: ''}"
+							: ''}"
 							role="button"
 							tabindex="0"
 							onclick={() => !quizAnswered && checkAnswer(idx, currentQuiz.correct)}
@@ -203,6 +206,26 @@ function checkAnswer(selected: number, correct: number) {
 						</div>
 					{/each}
 				</div>
+			</div>
+		{/if}
+
+		{#if showCompletion}
+			<div class="completion-card">
+				<div class="completion-emoji">{wasCorrect ? '🎉' : '💪'}</div>
+				<h2 class="completion-title">
+					{wasCorrect ? 'Bravo !' : 'Pas tout à fait...'}
+				</h2>
+				<p class="completion-subtitle">
+					{wasCorrect
+						? "Tu as répondu correctement et terminé l'histoire !"
+						: "Tu as terminé l'histoire — continue comme ça !"}
+				</p>
+				<div class="completion-points">
+					+{wasCorrect ? 10 : 5} points gagnés
+				</div>
+				<button class="completion-btn" onclick={finishStory}>
+					Retour à la bibliothèque
+				</button>
 			</div>
 		{/if}
 	</div>
@@ -226,5 +249,70 @@ function checkAnswer(selected: number, correct: number) {
 
 	.quiz-start-btn:hover {
 		transform: scale(1.05);
+	}
+
+	.completion-card {
+		margin: 2rem 0 3rem;
+		padding: 2.5rem 2rem;
+		border-radius: 1.5rem;
+		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		text-align: center;
+		animation: fadeInUp 0.4s ease;
+	}
+
+	@keyframes fadeInUp {
+		from { opacity: 0; transform: translateY(16px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
+	.completion-emoji {
+		font-size: 3.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.completion-title {
+		font-size: 1.8rem;
+		font-weight: 700;
+		color: #fff;
+		margin: 0 0 0.5rem;
+	}
+
+	.completion-subtitle {
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 1rem;
+		margin: 0 0 1.25rem;
+		line-height: 1.5;
+	}
+
+	.completion-points {
+		display: inline-block;
+		padding: 0.35rem 1.1rem;
+		border-radius: 2rem;
+		background: rgba(107, 207, 127, 0.18);
+		color: #6bcf7f;
+		font-weight: 600;
+		font-size: 0.95rem;
+		margin-bottom: 1.75rem;
+	}
+
+	.completion-btn {
+		display: block;
+		width: 100%;
+		padding: 1rem;
+		border: none;
+		border-radius: 1rem;
+		background: linear-gradient(135deg, #667eea, #764ba2);
+		color: #fff;
+		font-size: 1.05rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: transform 0.15s, box-shadow 0.15s;
+		box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+	}
+
+	.completion-btn:hover {
+		transform: scale(1.02);
+		box-shadow: 0 8px 28px rgba(102, 126, 234, 0.5);
 	}
 </style>
