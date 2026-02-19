@@ -5,6 +5,12 @@ Tous les changements notables de ce projet sont documentés dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/).
 
+## [0.1.3] - 2026-02-19
+
+### Ajouté
+
+- 5 histoires de mythologie grecque : Icare (Débutant), La Boîte de Pandore (Débutant), Persée et Méduse (Intermédiaire), Thésée et le Minotaure (Intermédiaire), Orphée et Eurydice (Avancé)
+
 ## [0.1.2] - 2026-02-18
 
 ### Ajouté
