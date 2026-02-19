@@ -22,6 +22,8 @@ let endSentinel: HTMLElement;
 $: currentQuiz = story.quiz[0];
 
 onMount(() => {
+	window.scrollTo(0, 0);
+
 	const updateProgress = () => {
 		if (!readerTextEl) return;
 		const rect = readerTextEl.getBoundingClientRect();
@@ -314,5 +316,17 @@ function finishStory() {
 	.completion-btn:hover {
 		transform: scale(1.02);
 		box-shadow: 0 8px 28px rgba(102, 126, 234, 0.5);
+	}
+
+	@media (max-width: 768px) {
+		.quiz-start-btn {
+			width: 100%;
+			padding: 1rem;
+			font-size: 1rem;
+		}
+
+		.completion-card {
+			padding: 2rem 1.25rem;
+		}
 	}
 </style>

@@ -89,6 +89,10 @@ function playAudio() {
 $: if (state.currentStory) {
 	currentTab = "reader";
 }
+
+$: if (!state?.currentStory && currentTab === "reader") {
+	currentTab = "library";
+}
 </script>
 
 <div class="bg-decoration"></div>
