@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import type { AppState, Progress, Story, VocabItem } from "./types";
+import { getBestEnglishVoice } from "./tts";
 
 const initialProgress: Progress = {
 	streak: 0,
@@ -210,8 +211,10 @@ function createAppStore() {
 		speakWord: (word: string) => {
 			if (typeof window !== "undefined") {
 				const utterance = new SpeechSynthesisUtterance(word);
-				utterance.lang = "en-US";
+				utterance.lang = "en-GB";
 				utterance.rate = 0.8;
+				const voice = getBestEnglishVoice();
+				if (voice) utterance.voice = voice;
 				speechSynthesis.speak(utterance);
 			}
 		},
@@ -224,8 +227,10 @@ function playStoryAudio(state: AppState, update: (fn: (s: AppState) => AppState)
 	const sentence = state.currentStory.sentences[state.currentSentenceIndex];
 	const text = state.isSimplified ? sentence.simple : sentence.en;
 	const utterance = new SpeechSynthesisUtterance(text);
-	utterance.lang = "en-US";
+	utterance.lang = "en-GB";
 	utterance.rate = 0.85;
+	const voice = getBestEnglishVoice();
+	if (voice) utterance.voice = voice;
 
 	utterance.onend = () => {
 		if (state.currentSentenceIndex < state.currentStory!.sentences.length - 1) {

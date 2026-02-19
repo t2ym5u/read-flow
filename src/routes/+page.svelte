@@ -10,6 +10,7 @@ import Reader from "$lib/components/Reader.svelte";
 import TranslationPopup from "$lib/components/TranslationPopup.svelte";
 import Vocabulary from "$lib/components/Vocabulary.svelte";
 import { loadStory, storyMetas, translations } from "$lib/stories";
+import { getBestEnglishVoice } from "$lib/tts";
 import type { AppState } from "$lib/types";
 
 let currentTab = "library";
@@ -65,20 +66,12 @@ function closeTranslation() {
 	showTranslation = false;
 }
 
-function getBestVoice(lang: string): SpeechSynthesisVoice | null {
-	const voices = speechSynthesis.getVoices();
-	const matching = voices.filter((v) => v.lang.startsWith(lang));
-	// Prefer premium/natural voices (macOS Enhanced, Chrome Online, etc.)
-	const premium = matching.find((v) => /premium|enhanced|natural|neural|online/i.test(v.name));
-	return premium || matching[0] || null;
-}
-
 function playAudio() {
 	if (typeof window !== "undefined") {
 		speechSynthesis.cancel();
 		const utterance = new SpeechSynthesisUtterance(translationData.original);
 		utterance.lang = "en-GB";
-		const voice = getBestVoice("en-GB");
+		const voice = getBestEnglishVoice();
 		if (voice) utterance.voice = voice;
 		utterance.rate = 0.9;
 		utterance.pitch = 1;
