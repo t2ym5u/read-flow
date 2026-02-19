@@ -8,25 +8,25 @@ export let switchTab: (tab: string) => void;
 		class="nav-tab {currentTab === 'library' ? 'active' : ''}"
 		onclick={() => switchTab('library')}
 	>
-		📖 Bibliothèque
+		<span class="nav-icon">📖</span><span class="nav-label"> Bibliothèque</span>
 	</button>
 	<button
 		class="nav-tab {currentTab === 'reader' ? 'active' : ''}"
 		onclick={() => switchTab('reader')}
 		style={currentTab === 'reader' ? '' : 'display: none;'}
 	>
-		📄 Lecture
+		<span class="nav-icon">📄</span><span class="nav-label"> Lecture</span>
 	</button>
 	<button
 		class="nav-tab {currentTab === 'progress' ? 'active' : ''}"
 		onclick={() => switchTab('progress')}
 	>
-		📊 Progrès
+		<span class="nav-icon">📊</span><span class="nav-label"> Progrès</span>
 	</button>
 	<button
 		class="nav-tab {currentTab === 'vocabulary' ? 'active' : ''}"
 		onclick={() => switchTab('vocabulary')}
 	>
-		📝 Vocabulaire
+		<span class="nav-icon">📝</span><span class="nav-label"> Vocab</span>
 	</button>
 </div>
